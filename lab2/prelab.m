@@ -1,7 +1,9 @@
 %% Set up
 k = 1;
 g = 9.8;
+
 %% Linearize model
+
 x_bar = [0.5; 0.0];
 u_bar = sqrt(g*x_bar(1)^2);
 
