@@ -28,7 +28,7 @@ d = f1 * alpha
 sys = tf([c, d],[1 alpha])
 
 %% dt sampling period
-T  = 0.05;
+T  = 0.11;
 
 %% 4.2.3 Discretize first order output controller
 discrete_controller = c2d(sys, T, 'tustin')
