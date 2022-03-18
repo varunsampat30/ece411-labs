@@ -65,3 +65,19 @@ ctrl2_Acls = Ad + Bd*ctrl2_F + ctrl2_L*D;
 
 ctrl1 = tf(num_ctrl1, den_ctrl1, T, 'Variable', 'z')
 ctrl2 = tf(num_ctrl2, den_ctrl2, T, 'Variable', 'z')
+
+%% In lab
+K = 1e-5;
+Pz = tf([1], [1 -1], T);
+Pz_num = cell2mat(Pz.Numerator);
+Pz_den = cell2mat(Pz.Denominator);
+
+z = tf('z', T);
+Cz = ((z-0.522)*(z+0.45))/((z - 0.96)*(z-0.94)*(z-0.92));
+Cz_num = cell2mat(Cz.Numerator);
+Cz_den = cell2mat(Cz.Denominator);
+
+CLSz = (K*Cz*Pz)/(1 + K*Cz*Pz);
+[z, p, k] = tf2zp(cell2mat(CLSz.Numerator), cell2mat(CLSz.Denominator)) 
+% alternatively 
+% p = pole(CLSz);
