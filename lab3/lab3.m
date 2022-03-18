@@ -47,8 +47,8 @@ ctrl1_X  = reshape(ctrl1_v_X_F2(1:6), [2,3]) % todo: fix hard-coded sizes
 ctrl1_F2 = reshape(ctrl1_v_X_F2(7:9), [1,3]) % todo: fix hard-coded sizes
 
 ctrl2_v_X_F2 = kronmat(A1, B1, ctrl2_F1, A2, D1) \ rhs_vec(A3, D2);
-ctrl2_X  = reshape(ctrl1_v_X_F2(1:6), [2,3]) % todo: fix hard-coded sizes
-ctrl2_F2 = reshape(ctrl1_v_X_F2(7:9), [1,3]) % todo: fix hard-coded sizes
+ctrl2_X  = reshape(ctrl2_v_X_F2(1:6), [2,3]) % todo: fix hard-coded sizes
+ctrl2_F2 = reshape(ctrl2_v_X_F2(7:9), [1,3]) % todo: fix hard-coded sizes
 
 % controller full-order observer pole-placement
 ctrl1_L = -1*acker(Ad', D', [0 0 0 0 0])'
@@ -57,7 +57,7 @@ ctrl2_L = -1*acker(Ad', D', [0.1, 0.1+0.3*1i, 0.1-0.3*1i, 0.2+0.2*1i, 0.2-0.2*1i
 % get controller tfs
 ctrl1_F    = [ctrl1_F1 ctrl1_F2];
 ctrl1_Acls = Ad + Bd*ctrl1_F + ctrl1_L*D;
-ctrl2_F    = [ctrl2_F1 ctrl2_F2];
+ctrl2_F    = [ctrl2_F1 ctrl2_F2];r
 ctrl2_Acls = Ad + Bd*ctrl2_F + ctrl2_L*D;
 
 [num_ctrl1, den_ctrl1] = ss2tf(ctrl1_Acls, -1*ctrl1_L, ctrl1_F, 0);
