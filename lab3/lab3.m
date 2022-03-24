@@ -57,7 +57,7 @@ ctrl2_L = -1*acker(Ad', D', [0.1, 0.1+0.3*1i, 0.1-0.3*1i, 0.2+0.2*1i, 0.2-0.2*1i
 % get controller tfs
 ctrl1_F    = [ctrl1_F1 ctrl1_F2];
 ctrl1_Acls = Ad + Bd*ctrl1_F + ctrl1_L*D;
-ctrl2_F    = [ctrl2_F1 ctrl2_F2];r
+ctrl2_F    = [ctrl2_F1 ctrl2_F2];
 ctrl2_Acls = Ad + Bd*ctrl2_F + ctrl2_L*D;
 
 [num_ctrl1, den_ctrl1] = ss2tf(ctrl1_Acls, -1*ctrl1_L, ctrl1_F, 0);
@@ -77,7 +77,77 @@ Cz = ((z-0.522)*(z+0.45))/((z - 0.96)*(z-0.94)*(z-0.92));
 Cz_num = cell2mat(Cz.Numerator);
 Cz_den = cell2mat(Cz.Denominator);
 
-CLSz = (K*Cz*Pz)/(1 + K*Cz*Pz);
-[z, p, k] = tf2zp(cell2mat(CLSz.Numerator), cell2mat(CLSz.Denominator)) 
-% alternatively 
-% p = pole(CLSz);
+CLSz = feedback(K*Cz, Pz)
+p = pole(CLSz);
+
+%% quantize maal
+q = 2^(-16);
+K_quant = quant(K, q);
+Cz_num_quant = quant(Cz_num, q);
+Cz_den_quant = quant(Cz_den, q);
+Cz_quant = tf(Cz_num_quant, Cz_den_quant, T)
+
+CLS_quant = feedback(K_quant*Cz_quant, Pz)
+p_quant = pole(CLS_quant)
+
+%% Decomposing controllers
+C1_z = tf(1, [1 -0.96], T);
+C2_z = tf([1 -0.522], [1 -0.94], T);
+C3_z = tf([1 0.45], [1 -0.92], T);
+
+C1_z_num = cell2mat(C1_z.Numerator);
+C1_z_den = cell2mat(C1_z.Denominator);
+C1_z_num_quant = quant(C1_z_num, q);
+C1_z_den_quant = quant(C1_z_den, q);
+C1_quant = tf(C1_z_num_quant, C1_z_den_quant, T);
+
+C2_z_num = cell2mat(C2_z.Numerator);
+C2_z_den = cell2mat(C2_z.Denominator);
+C2_z_num_quant = quant(C2_z_num, q);
+C2_z_den_quant = quant(C2_z_den, q);
+C2_quant = tf(C2_z_num_quant, C2_z_den_quant, T);
+
+C3_z_num = cell2mat(C3_z.Numerator);
+C3_z_den = cell2mat(C3_z.Denominator);
+C3_z_num_quant = quant(C3_z_num, q);
+C3_z_den_quant = quant(C3_z_den, q);
+C3_quant = tf(C3_z_num_quant, C3_z_den_quant, T);
+
+C_eff = C1_quant * C2_quant * C3_quant;
+
+CLS_quant_2 = feedback(K_quant*C_eff, Pz);
+p_quant_eff = pole(CLS_quant_2);
+
+%% Section 4.3
+Pz_new = 0.25/((z - 1)*(z - 0.5));
+Pz_new_num = cell2mat(Pz_new.Numerator);
+Pz_new_den = cell2mat(Pz_new.Denominator);
+
+%% Section 4.4
+q = 2^(-16);
+[ctrl1_zeros, ctrl1_poles, ctrl1_gain] = tf2zpk( ...
+    cell2mat(ctrl1.Numerator), ...
+    cell2mat(ctrl1.Denominator) ...
+    );
+
+ctrl1_z_quant = quant(ctrl1_zeros', q);
+ctrl1_p_quant = quant(ctrl1_poles', q);
+ctrl1_k_quant = quant(ctrl1_gain, q);
+
+ctrl1_quant = zpk(ctrl1_z_quant, ctrl1_p_quant, ctrl1_k_quant, T)
+
+[ctrl2_zeros, ctrl2_poles, ctrl2_gain] = tf2zpk( ...
+    cell2mat(ctrl2.Numerator), ...
+    cell2mat(ctrl2.Denominator) ...
+    );
+
+ctrl2_z_quant = quant(ctrl2_zeros', q);
+ctrl2_p_quant = quant(ctrl2_poles', q);
+ctrl2_k_quant = quant(ctrl2_gain, q);
+
+ctrl2_quant = zpk(ctrl2_z_quant, ctrl2_p_quant, ctrl2_k_quant, T)
+
+plant_tf = ss2tf(A, B, D, 0);
+
+
+
