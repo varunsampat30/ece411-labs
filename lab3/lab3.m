@@ -134,7 +134,9 @@ ctrl1_z_quant = quant(ctrl1_zeros', q);
 ctrl1_p_quant = quant(ctrl1_poles', q);
 ctrl1_k_quant = quant(ctrl1_gain, q);
 
-ctrl1_quant = zpk(ctrl1_z_quant, ctrl1_p_quant, ctrl1_k_quant, T)
+ctrl1_quant = tf(zpk(ctrl1_z_quant, ctrl1_p_quant, ctrl1_k_quant, T));
+ctrl1_quant_num = cell2mat(ctrl1_quant.numerator);
+ctrl1_quant_den = cell2mat(ctrl1_quant.denominator);
 
 [ctrl2_zeros, ctrl2_poles, ctrl2_gain] = tf2zpk( ...
     cell2mat(ctrl2.Numerator), ...
@@ -145,9 +147,13 @@ ctrl2_z_quant = quant(ctrl2_zeros', q);
 ctrl2_p_quant = quant(ctrl2_poles', q);
 ctrl2_k_quant = quant(ctrl2_gain, q);
 
-ctrl2_quant = zpk(ctrl2_z_quant, ctrl2_p_quant, ctrl2_k_quant, T)
+ctrl2_quant = tf(zpk(ctrl2_z_quant, ctrl2_p_quant, ctrl2_k_quant, T));
+ctrl2_quant_num = cell2mat(ctrl2_quant.numerator);
+ctrl2_quant_den = cell2mat(ctrl2_quant.denominator);
+    
+% plant_sys = ss(A, B, D, 0);
+plant_sys = tf(1, [1 0 1]);
 
-plant_tf = ss2tf(A, B, D, 0);
 
 
 
