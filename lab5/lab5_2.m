@@ -97,9 +97,9 @@ pends_args = struct( ...
     'end_index', 3);
 
 %% 4.3
-pend_A_args = struct('A', A_a, 'B', B_a, 'F', F1, 'exec_time', 10e-3, 'period', 50e-3);
-pend_B_args = struct('A', A_b, 'B', B_b, 'F', F2, 'exec_time', 14e-3, 'period', 70e-3);
-pend_C_args = struct('A', A_c, 'B', B_c, 'F', F3, 'exec_time', 17e-3, 'period', 85e-3);
+pend_A_args = struct('A', A_a, 'B', B_a, 'F', F1, 'exec_time', 10e-3, 'period', 20e-3);
+pend_B_args = struct('A', A_b, 'B', B_b, 'F', F2, 'exec_time', 14e-3, 'period', 56e-3);
+pend_C_args = struct('A', A_c, 'B', B_c, 'F', F3, 'exec_time', 17e-3, 'period', 68e-3);
 
 pends_args = struct( ...
     'schedule_algo', 3, ...
