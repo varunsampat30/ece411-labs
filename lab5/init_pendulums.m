@@ -36,8 +36,10 @@ for i = start_index:end_index
     ttCreatePeriodicTask(tasknames{i}, starttimes(i), pend_data.period, 'control_func', arg);
 
     % Set priority (val, name)
-    ttSetPriority(1/pend_data.period, tasknames{i});
-%     ttSetPriority(i, tasknames{i});
+%     ttSetPriority(1/pend_data.period, tasknames{i});
+% TODO: Priority C, B, A (highest C)
+%     ttSetPriority(4-i, tasknames{i});    
+    ttSetPriority(i, tasknames{i});
 end
 
 ttCreateHandler('dl_miss_handler', 1, 'hdlcode')
