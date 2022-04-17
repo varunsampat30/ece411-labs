@@ -37,3 +37,5 @@ greater than rank(B).
 F1 = -1*place(A_a, B_a, [-1.5 -1.6 -1.7 -1.8]);
 F2 = -1*place(A_b, B_b, [-1.5 -1.6 -1.7 -1.8]);
 F3 = -1*place(A_c, B_c, [-1.5 -1.6 -1.7 -1.8]);
+
+% args = [F...]
